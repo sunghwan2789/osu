@@ -54,8 +54,8 @@ namespace osu.Game.Beatmaps.Formats
             // The parsing order of hitobjects matters in mania difficulty calculation
             this.beatmap.HitObjects = this.beatmap.HitObjects.OrderBy(h => h.StartTime).ToList();
 
-            foreach (var hitObject in this.beatmap.HitObjects)
-                hitObject.ApplyDefaults(this.beatmap.ControlPointInfo, this.beatmap.BeatmapInfo.BaseDifficulty);
+            //foreach (var hitObject in this.beatmap.HitObjects)
+            //    hitObject.ApplyDefaults(this.beatmap.ControlPointInfo, this.beatmap.BeatmapInfo.BaseDifficulty);
         }
 
         protected override bool ShouldSkipLine(string line) => base.ShouldSkipLine(line) || line.StartsWith(" ") || line.StartsWith("_");
@@ -407,9 +407,13 @@ namespace osu.Game.Beatmaps.Formats
             if (parser == null)
                 parser = new Rulesets.Objects.Legacy.Osu.ConvertHitObjectParser(getOffsetTime(), FormatVersion);
 
-            var obj = parser.Parse(line);
-            if (obj != null)
-                beatmap.HitObjects.Add(obj);
+            try
+            {
+                var obj = parser.Parse(line);
+                if (obj != null)
+                    beatmap.HitObjects.Add(obj);
+            }
+            catch { }
         }
 
         private int getOffsetTime(int time) => time + (ApplyOffsets ? offset : 0);
